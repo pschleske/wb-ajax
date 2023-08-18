@@ -10,10 +10,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const WEATHER = {
-  '90210': {'forecast': 'Very warm. Good for sunbathing with movie stars.', 'temp': '90F'},
-  '97202': {'forecast': 'Rainy, damp, and rich with hipsters.', 'temp': '60F'},
-  '20004': {'forecast': 'Full of hot air.', 'temp': '95F'},
-  '99709': {'forecast': 'Very cold. May need to crawl inside a Tauntaun for warmth.', 'temp': '-25F'}
+  '90210': { 'forecast': 'Very warm. Good for sunbathing with movie stars.', 'temp': '90F' },
+  '97202': { 'forecast': 'Rainy, damp, and rich with hipsters.', 'temp': '60F' },
+  '20004': { 'forecast': 'Full of hot air.', 'temp': '95F' },
+  '99709': { 'forecast': 'Very cold. May need to crawl inside a Tauntaun for warmth.', 'temp': '-25F' }
 }
 
 const DEFAULT_FORECAST = 'Kind of boring.';
@@ -25,7 +25,13 @@ app.get('/', (req, res) => {
 app.get('/weather.txt', (req, res) => {
   const zipcode = req.query.zipcode;
   // TODO: Get the weather for this zipcode and return the forecast if available.
-  // If not, return the default forecast.
+  const weather = WEATHER[zipcode]
+  if (weather) {
+    res.send(weather.forecast);
+    // If not, return the default forecast.
+  } else {
+    res.send(DEFAULT_FORECAST)
+  }
 })
 
 app.post('/order-cookies.json', (req, res) => {
@@ -45,7 +51,9 @@ app.post('/order-cookies.json', (req, res) => {
   else {
     message = `Your order of ${qty} ${cookieType} cookies has been confirmed.`
   }
-  res.json({resultCode: resultCode, message: message});
+  res.json({ resultCode: resultCode, message: message });
 })
+
+
 
 ViteExpress.listen(app, port, () => console.log(`Server running on http://localhost:${port}`));
